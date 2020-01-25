@@ -1,0 +1,12 @@
+Simulating Twin Data
+====================
+
+What do I want to do?
+
+I want to create a data table of ID's, and simulate a phenotype.
+
+Fun!
+
+
+
+
