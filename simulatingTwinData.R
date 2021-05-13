@@ -1,9 +1,11 @@
+#!/usr/bin/env Rscript
+
 library( MASS )
 library( tidyverse )
 library( dplyr )
 library( GGally )
 
-N=1000 #Number of twin pairs
+N=5000 #Number of twin pairs
 
 mean=0
 sd=1
@@ -37,11 +39,15 @@ head(mz)
 
 # I did it.. I just simulated some twin data!
 # that was amazingly easy
-# I should get to work
 
 # Now what?
 
+# Don't stop now. What else do you want to be able to do?
+
 # tidy up the above
+# give your columns names
+# add in age and sex variables
+
 # make it better, more generalizable
 # I could make it executable
   # You could simlate and save datasets and inpute whatever correlations you want to!
