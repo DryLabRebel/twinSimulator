@@ -35,8 +35,8 @@ N=5000 #Number of twin pairs
 mean=0
 sd=1
 
-MZr=0.8 #monozygotic (MZ) twin correlation
-DZr=as.numeric(args[1]) #dizygotic (DZ) twin correlation
+MZr=as.numeric(args[1]) #monozygotic (MZ) twin correlation
+DZr=as.numeric(args[2]) #dizygotic (DZ) twin correlation
 # Note in a twin study, this will produce a perfect AE model with a heritability of pretty much exactly 0.8
 
 # ----------------------
