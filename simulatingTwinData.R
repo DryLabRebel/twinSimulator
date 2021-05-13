@@ -1,4 +1,29 @@
 #!/usr/bin/env Rscript
+args <- commandArgs(trailingOnly=TRUE)
+
+# let's start simple. Can I specifiy the MZ correlation from the command line?
+  # then add in conditions to avoid bad information like strings, add in a default argument '0.8'
+
+# test if there is at least one argument: if not, return an error
+# if (length(args)==0) {
+#   stop("At least one argument must be supplied (input file).n", call.=FALSE)
+# } else if (length(args)==1) {
+#   # default output file
+#   args[2] = "out.txt"
+# }
+
+# inputs an executable could/should accept
+  # libraries to install? But if the script had a dedicated purpose, you would always know what libraries you need
+  # sample size
+  # mean
+  # sd
+  # variable names (MZ, DZ by default)
+  # designated twin correlations
+  # possible column names (MZ1/2, DZ1/2 by default)
+
+# oh oh, I could eventually get the script to rbind MZs and DZs and add a zygosity column
+# include sex, and OS twins
+# Maybe I could eventually simulate data which randomly select twin correlations for each iteration - just to keep you on your toes
 
 library( MASS )
 library( tidyverse )
@@ -11,7 +36,7 @@ mean=0
 sd=1
 
 MZr=0.8 #monozygotic (MZ) twin correlation
-DZr=0.4 #dizygotic (DZ) twin correlation
+DZr=as.numeric(args[1]) #dizygotic (DZ) twin correlation
 # Note in a twin study, this will produce a perfect AE model with a heritability of pretty much exactly 0.8
 
 # ----------------------
@@ -56,6 +81,8 @@ head(mz)
 # Produce some distributions and summary statistics
 
 # Do the same thing in python
+# Do the same thing in bash
+# Do the same thing in C++
 
 # Do some twin analyses
 

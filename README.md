@@ -12,31 +12,9 @@ Modelling
 
 ### Phase 1 ###
 
-1. Research Questions
-
-- Can I competently simulate twin data for the purposes of running some interesting Twin Models using Structural Equation Modelling?
-- Can I write clearly and efficiently written executable R scripts to demonstrate the above?
-- Can I learn something interesting about Twin analyses by simulating multiple varieties of data - different correlations, different data types and distributions?
-
-2. Define the design, design the study
-
-- Simulate Twin data including:
-  - Multiple phenotypes
-  - Age and Sex to be used as covariates
-  - 2 siblings
-  - Data with Sex, and sex limited effects
-- Store in 1ID per line, and 1Family per line data types
-
-3. Variable Selection
-
-- Multiple, simulated variables designed to generate interesting and interpretable results and improve my understanding of:
-  - SEM
-  - AIC statistics
-  - the effects of a variety of distributions and variable types on Uni and Multivariate Twin Analyses
-  - the effects of sample size and model selection on results
-  - power requirements for different structural equation models and variable types
-
-4. Analysis Plan
+*Check* (14-05-2021) - - Can I simulate twin data
+*Check* (14-05-2021) - - Can I write executable R scripts
+- Can modify the script to accept input? Maybe turn the simulation into a function?
 
 - Simulate twin data
   - Perform assumption testing of data
