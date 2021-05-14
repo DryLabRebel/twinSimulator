@@ -12,6 +12,6 @@ respectively.
 *Check* (14-05-2021) - - Can I simulate twin data
 *Check* (14-05-2021) - - Can I write executable R scripts
 *Check* (15-05-2021) - - Can modify the script to accept input
-
+Can I tidy up the simulated data, and save it a dataframe? (\*.txt)
 
 
