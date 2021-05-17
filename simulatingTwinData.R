@@ -1,99 +1,124 @@
 #!/usr/bin/env Rscript
-args <- commandArgs(trailingOnly=TRUE)
 
-# let's start simple. Can I specifiy the MZ correlation from the command line?
-  # then add in conditions to avoid bad information like strings, add in a default argument '0.8'
+args <- commandArgs( trailingOnly = TRUE )
 
-# test if there is at least one argument: if not, return an error
-# if (length(args)==0) {
-#   stop("At least one argument must be supplied (input file).n", call.=FALSE)
-# } else if (length(args)==1) {
-#   # default output file
-#   args[2] = "out.txt"
-# }
+print("Correlated twin data simulator. Accepts three inputs, must be in order: MZr (MZ correlation), DZr (DZ correlation), N (number of twin pairs).", quote=F)
 
-# inputs an executable could/should accept
-  # libraries to install? But if the script had a dedicated purpose, you would always know what libraries you need
-  # sample size
-  # mean
-  # sd
-  # variable names (MZ, DZ by default)
-  # designated twin correlations
-  # possible column names (MZ1/2, DZ1/2 by default)
+oldw <- getOption("warn")
 
-# oh oh, I could eventually get the script to rbind MZs and DZs and add a zygosity column
-# include sex, and OS twins
-# Maybe I could eventually simulate data which randomly select twin correlations for each iteration - just to keep you on your toes
+options(warn = -1)
+if ( is.na( args[1] ) == T ) {
+  print( "No MZ correlation detected. Default ( 0.8 ) will be used.", quote = F )
+  MZr <<- 0.8 #Number of twin pairs
+} else {
+  MZr <<- as.numeric( args[1] )
+}
+
+if ( is.na( args[2] ) == T ) {
+  print( "No DZ correlation detected. Default ( 0.4 ) will be used.", quote = F )
+  DZr <<- 0.4 #Number of twin pairs
+} else {
+  DZr <<- as.numeric( args[2] )
+}
+
+if ( is.na( args[3] ) == T ) {
+  print( "No sample size detected. Default ( 1000 ) will be used.", quote = F )
+  N <<- 1000 #Number of twin pairs
+} else {
+  N <<- as.numeric( args[3] )
+}
+options(warn = oldw)
+
+# Checking for bad input
+
+if ( is.na(MZr) == T ) {
+  stop( 
+       "Bad input. Your MZ correlation is not a numeric value", call. = FALSE
+  )
+} else if ( is.na(DZr) == T ) {
+  stop( 
+       "Bad input. Your DZ correlation is not a numeric value", call. = FALSE
+  )
+} else if ( is.na(N) == T ) {
+  stop( 
+       "Bad input. Your sample size is not a numeric value", call. = FALSE
+  )
+} 
+
+# sanity test for MZ correlation
+if ( MZr < ( -1 ) | MZr > 1 ) {
+  stop( 
+       "Bad input. Your MZ correlation is out of bounds. 
+       Please enter a number between -1 and 1
+       and/or please ensure you entered your arguments in order: MZr, DZr, N.", call. = FALSE
+  )
+} else if ( DZr < ( -1 ) | DZr > 1 ) {
+  stop( 
+       "Bad input. Your DZ correlation is out of bounds. 
+       Please enter a number between -1 and 1 for both 
+       and/or please ensure you entered your arguments in order: MZr, DZr, N.", call. = FALSE
+  )
+} else if ( N <= 1 ) {
+  stop( 
+       "Bad input. Your sample size is less than zero, or is not a whole number. 
+       Please ensure N is a whole number >= 2
+       and/or please ensure you entered your arguments in order: MZr, DZr, N.", call. = FALSE
+  )
+} else if ( MZr < DZr ) {
+# Warning when MZ correlation is less than DZ correlation - might happen if user inputs correlation in the wrong order
+  print( "supplied DZ correlation is larger than MZ correlation, this is unusual ( but not impossible ). Please ensure you entered your arguments in order: MZr, DZr, N.", quote = F )
+}
 
 library( MASS )
-library( tidyverse )
-library( dplyr )
-library( GGally )
+# library( tidyverse )
+# library( dplyr )
+# library( GGally )
 
-N=5000 #Number of twin pairs
+print( "No of arguments supplied:", quote = F )
+print( paste( length( args )), quote = F )
 
-mean=0
-sd=1
+print( "MZr:", quote = F )
+print( paste( MZr ), quote = F )
 
-MZr=as.numeric(args[1]) #monozygotic (MZ) twin correlation
-DZr=as.numeric(args[2]) #dizygotic (DZ) twin correlation
-# Note in a twin study, this will produce a perfect AE model with a heritability of pretty much exactly 0.8
+print( "DZr:", quote = F )
+print( paste( DZr ), quote = F )
 
-# ----------------------
+print( "Sample size:", quote = F )
+print( paste( N ), quote = F )
 
-# I should really figure out why this is important - my best understanding is it allows you to reproduce your randomly generated variables
 set.seed( 5 )
 
 # create a variance covariance matrix for MZs and DZs
 mzCov <- rbind( c( 1, MZr ), c( MZr, 1 ))
 dzCov <- rbind( c( 1, DZr ), c( DZr, 1 ))
 
-# Ah ok ok ok ok... so you start with the v/Cov matrix, and generate the data
-# As opposed to generating the v/Cov matrix using data - so obvious now!
-# Now I'm thinkin there's probably a nice way to do this in OpenMx
-
 # create the mean vector
-mu <- c( 10, 11 ) 
+MZmu <- c( 10, 10 )
+DZmu <- c( 11, 11 ) 
 
 # generate the multivariate normal distribution
-mz <- as.data.frame( mvrnorm( n=1000, mu=mu, Sigma=mzCov ))
-dz <- as.data.frame( mvrnorm( n=1000, mu=mu, Sigma=dzCov ))
+mz <- as.data.frame( mvrnorm( n = N, mu = MZmu, Sigma = mzCov ))
+dz <- as.data.frame( mvrnorm( n = N, mu = DZmu, Sigma = dzCov ))
 
-head(dz)
-head(mz)
+names( mz )[names( mz ) == "V1"] <- "twin1"
+names( mz )[names( mz ) == "V2"] <- "twin2"
 
-# I did it.. I just simulated some twin data!
-# that was amazingly easy
+names( dz )[names( dz ) == "V1"] <- "twin1"
+names( dz )[names( dz ) == "V2"] <- "twin2"
 
-# Now what?
-
-# Don't stop now. What else do you want to be able to do?
+head( dz )
+head( mz )
 
 # tidy up the above
 # give your columns names
 # add in age and sex variables
+# add in some conditions - default values, checks for bad input, etc.
 
-# make it better, more generalizable
-# I could make it executable
-  # You could simlate and save datasets and inpute whatever correlations you want to!
-  # probably not even that hard!
-
-# Produce some distributions and summary statistics
+# Don't take forever - get something that works, and shows off a few things
+# What next?
+# Web development?
 
 # Do the same thing in python
 # Do the same thing in bash
 # Do the same thing in C++
-
-# Do some twin analyses
-
-# Start getting complicated
-# Create some sex effects
-# Do some sex limitation
-
-# Create qualitative sex limitation
-
-# Create multiple variables
-
-# Run some power anlayses
-
 
