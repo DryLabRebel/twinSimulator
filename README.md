@@ -15,6 +15,13 @@ respectively.
 
 *Check* (15-05-2021) - - Can modify the script to accept input
 
+*Check* (19-05-2021) - - Can I designate default values when input is missing
+
+- Can I name arugments for input
+
 Can I tidy up the simulated data, and save it a dataframe? (\*.txt)
+
+NOTE: Don't forget you need to commit changes on a branch before switching branches, otherwise your changes
+carry over to the switched branch!
 
 
