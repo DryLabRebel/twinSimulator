@@ -1,7 +1,27 @@
 #!/usr/bin/env Rscript
 
+library(R.utils)
 # Accept command line arguments
-args <- commandArgs( trailingOnly = TRUE )
+args <- commandArgs( trailingOnly = TRUE, asValues = T, args = c( "MZr", "DZr", "N" ))
+
+cat("args is:\n")
+args 
+# args 
+# So args is a vector
+# so what do I want to do?
+# pass named arguments where the name designates the variable it is assigned to
+# So there's a new function `commandArgs` which is backwards compatible. How do I get it?
+# "this package is not available with this version of R"
+# - see here more options: https://cran.r-project.org/doc/manuals/r-patched/R-admin.html#Installing-packages
+# Ah, it's a function within the R.utils package!
+# OK, I have no idea how this should work. Looks like I'm just gunma have to break stuff
+# NOTE: May need to learn more about lists, to properly understand this (and because it's good to learn about lists)
+
+cat("elements of args are:\n")
+args[1]
+args[2]
+args[3]
+args[4]
 
 # Documentation
 print("Correlated twin data simulator. Accepts three inputs, must be in order: MZr (MZ correlation), DZr (DZ correlation), N (number of twin pairs).", quote=F)
@@ -11,25 +31,25 @@ oldw <- getOption("warn")
 
 # Suppress warnings: will throw a warning if a non-numeric is entered - but I have my own warnings below, which are clearer which are more user friendly
 options(warn = -1)
-if ( is.na( args[1] ) == T ) {
+if ( is.na( args[2] ) == T ) {
   print( "No MZ correlation detected. Default ( 0.8 ) will be used.", quote = F )
   MZr <<- 0.8 #Number of twin pairs
 } else {
-  MZr <<- as.numeric( args[1] )
-}
-
-if ( is.na( args[2] ) == T ) {
-  print( "No DZ correlation detected. Default ( 0.4 ) will be used.", quote = F )
-  DZr <<- 0.4 #Number of twin pairs
-} else {
-  DZr <<- as.numeric( args[2] )
+  MZr <<- as.numeric( args[2] )
 }
 
 if ( is.na( args[3] ) == T ) {
+  print( "No DZ correlation detected. Default ( 0.4 ) will be used.", quote = F )
+  DZr <<- 0.4 #Number of twin pairs
+} else {
+  DZr <<- as.numeric( args[3] )
+}
+
+if ( args[4] == NULL ) {
   print( "No sample size detected. Default ( 1000 ) will be used.", quote = F )
   N <<- 1000 #Number of twin pairs
 } else {
-  N <<- as.numeric( args[3] )
+  N <<- as.numeric( args[4] )
 }
 # reactivate warnings
 options(warn = oldw)
