@@ -3,7 +3,7 @@ Twin Simulator
 
 A portfolio project.
 
-A very simple R script which randomly generates correlated data.
+A very simple R script which randomly generates correlated data and has very basic error checking functionality.
 
 This script accepts three named arguments:
 
@@ -11,13 +11,14 @@ This script accepts three named arguments:
 - `--dzr` (the dizygotic twin correlation; default = 0.4)
 - `--n`   (the sample size; default = 1000)
 
-All three arguments are optional. If one or more arguments are missing, the program will use the default values
+All three arguments are optional. If one or more arguments are missing, the program will use the default values.
 
 To execute the script you must have R installed, and the packages `Rutils` and `MASS`.
 
 Usage:
+------
 
-From the command line enter:
+Download the script `simulatingTwinData.R` into some directory. From that directory on the command line enter:
 
 `$./simulatingTwinData.R`
 
@@ -30,7 +31,7 @@ To specify custom values enter:
 where X, Y and Z are numerical values. If non numerical values are entered, the program will throw and error
 and exit.
 
-`mzr` and `dzr` *must* be between -1 and 1, otherwise the program will throw and error and exit.
+`mzr` and `dzr` *must* be a numeric value between -1 and 1, otherwise the program will throw and error and exit.
 
 `N` *must* be a positive integer >= 2, otherwise the program will throw and error and exit.
 
