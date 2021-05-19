@@ -37,7 +37,7 @@ The flags can be entered in any order.
 
 `N` *must* be a positive integer >= 2, otherwise the program will throw and error and exit.
 
-If `dzr` is less than `mzr` the program will run, but will warn you that in real world datasets this can happen, but it is uncommon.
+If `mzr` is less than `dzr` the program will run, but will warn you that in real world datasets this can happen, but it is uncommon.
 
 Future planned functionality:
 
