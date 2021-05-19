@@ -31,8 +31,15 @@ To specify custom values enter:
 where X, Y and Z are numerical values. If non numerical values are entered, the program will throw and error
 and exit.
 
+The flags can be entered in any order.
+
 `mzr` and `dzr` *must* be a numeric value between -1 and 1, otherwise the program will throw and error and exit.
 
 `N` *must* be a positive integer >= 2, otherwise the program will throw and error and exit.
 
+If `dzr` is less than `mzr` the program will run, but will warn you that in real world datasets this can happen, but it is uncommon.
 
+Future planned functionality:
+
+- the inclusion of age and sex variables
+- the ability to simulate sex-limitation effects
