@@ -1,146 +1,130 @@
 #!/usr/bin/env Rscript
 
-library(R.utils)
+suppressMessages(suppressWarnings(library(R.utils, quietly = T)))
 # Accept command line arguments
-args <- commandArgs( trailingOnly = TRUE, asValues = T, args = c( "MZr", "DZr", "N" ))
-
-cat("args is:\n")
-args 
-# args 
-# So args is a vector
-# so what do I want to do?
-# pass named arguments where the name designates the variable it is assigned to
-# So there's a new function `commandArgs` which is backwards compatible. How do I get it?
-# "this package is not available with this version of R"
-# - see here more options: https://cran.r-project.org/doc/manuals/r-patched/R-admin.html#Installing-packages
-# Ah, it's a function within the R.utils package!
-# OK, I have no idea how this should work. Looks like I'm just gunma have to break stuff
-# NOTE: May need to learn more about lists, to properly understand this (and because it's good to learn about lists)
-
-cat("elements of args are:\n")
-args[1]
-args[2]
-args[3]
-args[4]
+args <- commandArgs(trailingOnly = TRUE, asValues = T, args = c("mzr", "dzr", "N"))
 
 # Documentation
-print("Correlated twin data simulator. Accepts three inputs, must be in order: MZr (MZ correlation), DZr (DZ correlation), N (number of twin pairs).", quote=F)
+cat("\nCorrelated twin data simulator.\nAccepts three inputs, --mzr (MZ correlation), --dzr (DZ correlation), --N (number of twin pairs).\n\n")
 
 # store current output warnings setting
 oldw <- getOption("warn")
 
 # Suppress warnings: will throw a warning if a non-numeric is entered - but I have my own warnings below, which are clearer which are more user friendly
 options(warn = -1)
-if ( is.na( args[2] ) == T ) {
-  print( "No MZ correlation detected. Default ( 0.8 ) will be used.", quote = F )
-  MZr <<- 0.8 #Number of twin pairs
+if (is.null(args[["mzr"]]) == T) {
+  cat("No MZ correlation detected. Default (0.8) will be used.\n\n")
+  mzr <<- 0.8 #Number of twin pairs
 } else {
-  MZr <<- as.numeric( args[2] )
+  mzr <<- as.numeric(args$mzr)
 }
 
-if ( is.na( args[3] ) == T ) {
-  print( "No DZ correlation detected. Default ( 0.4 ) will be used.", quote = F )
-  DZr <<- 0.4 #Number of twin pairs
+if (is.null(args[["dzr"]]) == T) {
+  cat("No DZ correlation detected. Default (0.4) will be used.\n\n")
+  dzr <<- 0.4 #Number of twin pairs
 } else {
-  DZr <<- as.numeric( args[3] )
+  dzr <<- as.numeric(args$dzr)
 }
 
-if ( args[4] == NULL ) {
-  print( "No sample size detected. Default ( 1000 ) will be used.", quote = F )
+if (is.null(args[["N"]]) == T) {
+  cat("No sample size detected. Default (1000) will be used.\n\n")
   N <<- 1000 #Number of twin pairs
 } else {
-  N <<- as.numeric( args[4] )
+  N <<- as.numeric(args$N)
 }
 # reactivate warnings
 options(warn = oldw)
 
 # Checking for bad/non-numeric input
-if ( is.na(MZr) == T ) {
-  stop( 
-       "Bad input. Your MZ correlation is not a numeric value", call. = FALSE
-  )
-} else if ( is.na(DZr) == T ) {
-  stop( 
-       "Bad input. Your DZ correlation is not a numeric value", call. = FALSE
-  )
-} else if ( is.na(N) == T ) {
-  stop( 
-       "Bad input. Your sample size is not a numeric value", call. = FALSE
-  )
+if (is.na(mzr) == T) {
+  stop(
+       "Bad input. Your MZ correlation is not a numeric value\n\n", call. = FALSE
+ )
+} else if (is.na(dzr) == T) {
+  stop(
+       "Bad input. Your DZ correlation is not a numeric value\n\n", call. = FALSE
+ )
+} else if (is.na(N) == T) {
+  stop(
+       "Bad input. Your sample size is not a numeric value\n\n", call. = FALSE
+ )
 } 
 
 # sanity test for input
-if ( MZr < ( -1 ) | MZr > 1 ) {
-  stop( 
-       "Bad input. Your MZ correlation is out of bounds. 
+if (mzr < (-1) | mzr > 1) {
+  stop(
+       "Bad input. Your MZ correlation is out of bounds.
        Please enter a number between -1 and 1
-       and/or please ensure you entered your arguments in order: MZr, DZr, N.", call. = FALSE
-  )
-} else if ( DZr < ( -1 ) | DZr > 1 ) {
-  stop( 
-       "Bad input. Your DZ correlation is out of bounds. 
-       Please enter a number between -1 and 1 for both 
-       and/or please ensure you entered your arguments in order: MZr, DZr, N.", call. = FALSE
-  )
-} else if ( N <= 1 ) {
-  stop( 
-       "Bad input. Your sample size is less than zero, or is not a whole number. 
+       and/or please ensure you entered your arguments in order: mzr, dzr, N.\n\n", call. = FALSE
+ )
+} else if (dzr < (-1) | dzr > 1) {
+  stop(
+       "Bad input. Your DZ correlation is out of bounds.
+       Please enter a number between -1 and 1 for both
+       and/or please ensure you entered your arguments in order: mzr, dzr, N.\n\n", call. = FALSE
+ )
+} else if (N <= 1) {
+  stop(
+       "Bad input. Your sample size is only one or less, or is not a whole number.
        Please ensure N is a whole number >= 2
-       and/or please ensure you entered your arguments in order: MZr, DZr, N.", call. = FALSE
-  )
-} else if ( MZr < DZr ) {
+       and/or please ensure you entered your arguments in order: mzr, dzr, N.\n\n", call. = FALSE
+ )
+} else if (mzr < dzr) {
 # Warning when MZ correlation is less than DZ correlation - might happen if user inputs correlation in the wrong order
-  print( "WARNING: supplied DZ correlation is larger than MZ correlation, this is unusual ( but not impossible ). Was this intentional? Please ensure you entered your arguments in order: MZr, DZr, N.", quote = F )
+  cat("WARNING: supplied DZ correlation is larger than MZ correlation, this is unusual (but not impossible). Was this intentional? Please ensure you entered your arguments in order: mzr, dzr, N.\n\n")
 }
 
-library( MASS )
-# library( tidyverse )
-# library( dplyr )
-# library( GGally )
+library(MASS, quietly = T)
+# library(tidyverse, quietly = T)
+# library(dplyr, quietly = T)
+# library(GGally, quietly = T)
 
-print( "No of arguments supplied:", quote = F )
-print( paste( length( args )), quote = F )
+cat("No of arguments supplied:\n")
+cat(paste(length(args)), "\n\n")
 
-print( "MZr:", quote = F )
-print( paste( MZr ), quote = F )
+cat("mzr:\n")
+cat(paste(mzr), "\n\n")
 
-print( "DZr:", quote = F )
-print( paste( DZr ), quote = F )
+cat("dzr:\n")
+cat(paste(dzr), "\n\n")
 
-print( "Sample size:", quote = F )
-print( paste( N ), quote = F )
+cat("Sample size:\n")
+cat(paste(N), "\n\n")
 
-set.seed( 5 )
+set.seed(5)
 
 # create a variance covariance matrix for MZs and DZs
-mzCov <- rbind( c( 1, MZr ), c( MZr, 1 ))
-dzCov <- rbind( c( 1, DZr ), c( DZr, 1 ))
+mzCov <- rbind(c(1, mzr), c(mzr, 1))
+dzCov <- rbind(c(1, dzr), c(dzr, 1))
 
 # create the mean vector
-MZmu <- c( 10, 10 )
-DZmu <- c( 11, 11 ) 
+MZmu <- c(10, 10)
+DZmu <- c(11, 11) 
 
 # generate the multivariate normal distribution
-mz <- as.data.frame( mvrnorm( n = N, mu = MZmu, Sigma = mzCov ))
-dz <- as.data.frame( mvrnorm( n = N, mu = DZmu, Sigma = dzCov ))
+mz <- as.data.frame(mvrnorm(n = N, mu = MZmu, Sigma = mzCov))
+dz <- as.data.frame(mvrnorm(n = N, mu = DZmu, Sigma = dzCov))
 
-names( mz )[names( mz ) == "V1"] <- "twin1"
-names( mz )[names( mz ) == "V2"] <- "twin2"
+names(mz)[names(mz) == "V1"] <- "twin1"
+names(mz)[names(mz) == "V2"] <- "twin2"
 
-names( dz )[names( dz ) == "V1"] <- "twin1"
-names( dz )[names( dz ) == "V2"] <- "twin2"
+names(dz)[names(dz) == "V1"] <- "twin1"
+names(dz)[names(dz) == "V2"] <- "twin2"
 
 mz$zyg <- "mz"
 dz$zyg <- "dz"
 
-head( mz )
-head( dz )
+head(mz)
+head(dz)
 
 # tidy up the above
 # *Check* (17-05-2021) - # give your columns names
 # *Check* (17-05-2021) - # add in some conditions - default values, checks for bad input, etc.
-
-# find a way to uniquely specify arguments, so you can leave MZ blank, but still input DZr and/or N, so MZ uses default
+# *Check* (19-05-2021) - # find a way to uniquely specify arguments, so you can leave MZ blank, but still input dzr and/or N, so MZ uses default
+# find a way to optionally specify arguments without a flag - iff they are in the correct order?
+  # Maybe I don't need to do this?
+  # Maybe it would be even better if it was an interactive program that could be executed, and accept input
+  # This way I could start with instructions, and have the user input the information they're interested in?
 
 # add in age and sex variables
 
@@ -150,7 +134,7 @@ head( dz )
 
 # rbind into 1 fam per line
 
-# save output as a *.txt file - use 'args' as filename - Twimsim_MZr[MZr]_DZr[DZr]_N[N].txt
+# save output as a *.txt file - use 'args' as filename - Twimsim_mzr[mzr]_dzr[dzr]_N[N].txt
 
 # when printing, suppress the '[1]' at the beginning of the line - i.e just print the output, as output
 
