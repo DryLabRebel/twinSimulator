@@ -5,23 +5,33 @@ A portfolio project.
 
 A very simple R script which randomly generates correlated data.
 
-Command line executable, accepts two arguments which designate the correlation between two pairs of variables,
-which you can think of the monozygotic (identical twin) and dizygotic (non identical twin) pair correlations
-respectively.
+This script accepts three named arguments:
 
-*Check* (14-05-2021) - - Can I simulate twin data
+- `--mzr` (the monozygotic twin correlation; default = 0.8)
+- `--dzr` (the dizygotic twin correlation; default = 0.4)
+- `--n`   (the sample size; default = 1000)
 
-*Check* (14-05-2021) - - Can I write executable R scripts
+All three arguments are optional. If one or more arguments are missing, the program will use the default values
 
-*Check* (15-05-2021) - - Can modify the script to accept input
+To execute the script you must have R installed, and the packages `Rutils` and `MASS`.
 
-*Check* (19-05-2021) - - Can I designate default values when input is missing
+Usage:
 
-- Can I name arugments for input
+From the command line enter:
 
-Can I tidy up the simulated data, and save it a dataframe? (\*.txt)
+`$./simulatingTwinData.R`
 
-NOTE: Don't forget you need to commit changes on a branch before switching branches, otherwise your changes
-carry over to the switched branch!
+This will simulate a twin dataset with the default values.
+
+To specify custom values enter:
+
+`$./simulatingTwinData.R --mzr=X --dzr=Y --N=Z`
+
+where X, Y and Z are numerical values. If non numerical values are entered, the program will throw and error
+and exit.
+
+`mzr` and `dzr` *must* be between -1 and 1, otherwise the program will throw and error and exit.
+
+`N` *must* be a positive integer >= 2, otherwise the program will throw and error and exit.
 
 
