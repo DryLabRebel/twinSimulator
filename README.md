@@ -15,6 +15,31 @@ All three arguments are optional. If one or more arguments are missing, the prog
 
 To execute the script you must have R installed, and the packages `Rutils` and `MASS`.
 
+By executing the script with one or more flags, the script will randomly generate a pair of correlated values
+(designated by either the input provided, or by the assigned defaults.
+
+The script will generate two data frames. One for monozygotic twins, and one for dizygotic twins.
+
+The script will also randomly assign a gender to each twin, or twin pair.
+
+Necessarily, monozygotic twins will always be the same gender. Dizygotic twins can be either both male, both
+female, or male/female twin pairs.
+
+Each dataframe will contain 5 columns:
+
+- `twin1` - the phenotype for twin one (which can be thought of as the 'first born' twin)
+- `twin2` - the phenotype for twin two (which can be thought of as the 'second born' twin)
+- `sex1` - the sex of twin 1
+- `sex2` - the sex of twin 2
+- `zyg` - the zygosity status according to sex.
+
+`mzm` = monozygotic males
+`mzf` = monozygotic females
+`dzm` = dizygotic male pair
+`dzf` = dizygotic female pair
+`dzM` = dizygotic twin pair, first born is male
+`dzF` = dizygotic twin pair, first born is female
+
 Usage:
 ------
 
