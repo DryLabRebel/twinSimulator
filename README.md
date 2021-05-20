@@ -11,19 +11,19 @@ This script accepts three named arguments:
 - `--dzr` (the dizygotic twin correlation; default = 0.4)
 - `--n`   (the sample size; default = 1000)
 
-All three arguments are optional. If one or more arguments are missing, the program will use the default values.
+All three arguments are optional. The program will use default values for any/all missing inputs.
 
 To execute the script you must have R installed, and the packages `Rutils` and `MASS`.
 
 By executing the script with one or more flags, the script will randomly generate a pair of correlated values
-(designated by either the input provided, or by the assigned defaults.
+(designated by either the input provided, or by the assigned defaults).
 
 The script will generate two data frames. One for monozygotic twins, and one for dizygotic twins.
 
 The script will also randomly assign a gender to each twin, or twin pair.
 
-Necessarily, monozygotic twins will always be the same gender. Dizygotic twins can be either both male, both
-female, or male/female twin pairs.
+Necessarily, monozygotic twins will always be the same gender. Dizygotic twins can be male/male,
+female/female or male/female twin pairs.
 
 Each dataframe will contain 5 columns:
 
@@ -33,12 +33,12 @@ Each dataframe will contain 5 columns:
 - `sex2` - the sex of twin 2
 - `zyg` - the zygosity status according to sex.
 
-`mzm` = monozygotic males
-`mzf` = monozygotic females
-`dzm` = dizygotic male pair
-`dzf` = dizygotic female pair
-`dzM` = dizygotic twin pair, first born is male
-`dzF` = dizygotic twin pair, first born is female
+`mzm` = monozygotic males  
+`mzf` = monozygotic females  
+`dzm` = dizygotic male pair  
+`dzf` = dizygotic female pair  
+`dzM` = dizygotic twin pair, first born is male  
+`dzF` = dizygotic twin pair, first born is female  
 
 Usage:
 ------
