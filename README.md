@@ -10,6 +10,7 @@ This script accepts three named arguments:
 - `--mzr` (the monozygotic twin correlation; default = 0.8)
 - `--dzr` (the dizygotic twin correlation; default = 0.4)
 - `--n`   (the sample size; default = 1000)
+- `--age` (the mean age of the whole sample; default = 25, sd is fixed at 5)
 
 All three arguments are optional. The program will use default values for any/all missing inputs.
 
@@ -25,12 +26,17 @@ The script will also randomly assign a gender to each twin, or twin pair.
 Necessarily, monozygotic twins will always be the same gender. Dizygotic twins can be male/male,
 female/female or male/female twin pairs.
 
+Necessarily, twin pairs will always be the same age.
+
 Each dataframe will contain 5 columns:
 
 - `twin1` - the phenotype for twin one (which can be thought of as the 'first born' twin)
 - `twin2` - the phenotype for twin two (which can be thought of as the 'second born' twin)
 - `sex1` - the sex of twin 1
 - `sex2` - the sex of twin 2
+- `age1` - the age of twin 1
+- `age2` - the age of twin 2 (which is necessarily the same as twin1, in real samples it's not biologically
+  necessary for twins to be born on the same day, but it's very unlikely they will be born in a different year)
 - `zyg` - the zygosity status according to sex.
 
 `mzm` = monozygotic males  
@@ -66,5 +72,5 @@ If `mzr` is less than `dzr` the program will run, but will warn you that in real
 
 Future planned functionality:
 
-- the inclusion of age and sex variables
 - the ability to simulate sex-limitation effects
+- the inclusion of 1 or more siblings
