@@ -2,7 +2,7 @@
 
 suppressMessages(suppressWarnings(library(R.utils, quietly = T)))
 # Accept command line arguments
-args <- commandArgs(trailingOnly = TRUE, asValues = T, args = c("mzr", "dzr", "N"))
+args <- commandArgs(trailingOnly = TRUE, asValues = T, args = c("mzr", "dzr", "N", "age"))
 
 # Documentation
 cat("\nCorrelated twin data simulator.\nAccepts three inputs, --mzr (MZ correlation), --dzr (DZ correlation), --N (number of twin pairs).\n\n")
@@ -38,6 +38,14 @@ if (is.null(args[["N"]]) == T) {
 } else {
   N <<- as.numeric(args$N)
 }
+
+if (is.null(args[["age"]]) == T) {
+  cat("No mean age detected. Default (25) will be used.\n\n")
+  age <<- 25 #Number of twin pairs
+} else {
+  age <<- as.numeric(args$age)
+}
+
 # reactivate warnings
 options(warn = oldw)
 
@@ -118,8 +126,14 @@ MZmu <- c(10, 10)
 DZmu <- c(11, 11) 
 
 # generate the multivariate normal distribution
-mz <- as.data.frame(mvrnorm(n = N, mu = MZmu, Sigma = mzCov))
-dz <- as.data.frame(mvrnorm(n = N, mu = DZmu, Sigma = dzCov))
+mz <- as.data.frame(round(mvrnorm(n = N, mu = MZmu, Sigma = mzCov), 2))
+dz <- as.data.frame(round(mvrnorm(n = N, mu = DZmu, Sigma = dzCov), 2))
+
+names(mz)[names(mz) == "V1"] <- "twin1"
+names(mz)[names(mz) == "V2"] <- "twin2"
+
+names(dz)[names(dz) == "V1"] <- "twin1"
+names(dz)[names(dz) == "V2"] <- "twin2"
 
 # Super informative Stack post - https://stats.stackexchange.com/questions/336166/what-is-the-difference-between-dbinom-and-dnorm-in-r
 
@@ -129,6 +143,15 @@ mz$sex1 <- sexmz
 mz$sex2 <- mz$sex1 # You could use 'sexmz' here too, but this way you are explicitly duplicating the gender of twin 1
 dz$sex1 <- rbinom(n = N, 1, 0.5)
 dz$sex2 <- rbinom(n = N, 1, 0.5)
+
+mzage <- round(rnorm(n = N, mean = age, sd = 5), 0)
+dzage <- round(rnorm(n = N, mean = age, sd = 5), 0)
+
+mz$age1 <- mzage
+mz$age2 <- mz$age1 # again makes it explicit - the twins are the same age
+
+dz$age1 <- dzage
+dz$age2 <- dz$age1 # again makes it explicit - the twins are the same age
 
 mz$zyg[mz$sex1 == 1]  <- "mzm"
 mz$zyg[mz$sex1 == 0]  <- "mzf"
@@ -152,12 +175,6 @@ dz$zyg[
        dz$sex1 == 0 &
        dz$sex2 == 1
        ]  <- "dzF"
-
-names(mz)[names(mz) == "V1"] <- "twin1"
-names(mz)[names(mz) == "V2"] <- "twin2"
-
-names(dz)[names(dz) == "V1"] <- "twin1"
-names(dz)[names(dz) == "V2"] <- "twin2"
 
 head(mz)
 head(dz)
