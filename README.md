@@ -3,9 +3,9 @@ Twin Simulator
 
 A portfolio project.
 
-A very simple R script which randomly generates correlated data and has very basic error checking functionality.
+A very simple R script which randomly generates correlated data with basic error checking functionality.
 
-This script accepts four named arguments:
+This script accepts six named arguments:
 
 - `--mzr` (the monozygotic twin correlation; default = 0.8)
 - `--dzr` (the dizygotic twin correlation; default = 0.4)
@@ -14,44 +14,45 @@ This script accepts four named arguments:
 - `--minage` (the minimum age of the whole sample; default = 0)
 - `--maxage` (the mean age of the whole sample; default = 25, sd is fixed at 5)
 
-All four arguments are optional. The program will use default values for any/all missing inputs.
+All six arguments are optional. The program will use default values for any/all missing inputs.
 
 To execute the script you must have R installed, and the packages `Rutils` and `MASS`.
 
 By executing the script with one or more flags, the script will randomly generate a pair of correlated values
-(designated by either the input provided, or by the assigned defaults).
+(designated either by the input provided, or by the assigned defaults).
 
 The script will generate two data frames. One for monozygotic twins, and one for dizygotic twins.
 
 The script will also randomly assign a gender to each twin, or twin pair.
 
-Necessarily, monozygotic twins will always be the same gender. Dizygotic twins can be male/male,
+Necessarily, monozygotic twins will always be the same gender. Dizygotic twins will be male/male,
 female/female or male/female twin pairs.
 
 Necessarily, twin pairs will always be the same age.
 
 Phenotypes are normally distributed.
 
-Age is a truncated poisson distribution (max 120). A minimum age can be set (optional). If no
-minimum age is set, the defaul minimum is zero , however:
+Age is in years, and uses a truncated poisson distribution (max 120). A minimum age can be set (optional). If no
+minimum age is set, the defaul minimum is zero.
 
-*technically there in **no** minimum. By default the min age is
-set to `-Inf`, however a poisson distribution is probability distribution of positive discrete values by
-definition, so the minimum will always be zero - **however however**:*
+*NOTE: technically there in **no** minimum; actually the default min age is
+set to `-Inf`, however a poisson distribution is a probability distribution of positive discrete values by
+definition, so the minimum will always be zero*
 
-*If you set the minimum value of a simulated truncated poisson to
-`zero`, the simulated distribution will **not** be the same as a standard poisson - in R at least.*
+*ALSO NOTE: If you manually set the minimum value of a simulated truncated poisson to
+`zero`, the resulting distribution will **not** be the same as a standard poisson*
 
-Each dataframe will contain 5 columns:
+Each dataframe will contain 7 columns:
 
 - `twin1` - the phenotype for twin one (which can be thought of as the 'first born' twin)
 - `twin2` - the phenotype for twin two (which can be thought of as the 'second born' twin)
 - `sex1` - the sex of twin 1
 - `sex2` - the sex of twin 2
 - `age1` - the age of twin 1
-- `age2` - the age of twin 2 (which is necessarily the same as twin1, in real samples it's not biologically
-  necessary for twins to be born on the same day, but it's very unlikely they will be born in a different year)
-- `zyg` - the zygosity status according to sex.
+- `age2` - the age of twin 2 (which is necessarily the same as twin1)
+- `zyg` - the zygosity of each twin pair
+
+Zygosity:
 
 `mzm` = monozygotic males  
 `mzf` = monozygotic females  
@@ -71,9 +72,9 @@ This will simulate a twin dataset with the default values.
 
 To specify custom values enter:
 
-`$./simulatingTwinData.R --mzr=X --dzr=Y --N=Z`
+`$./simulatingTwinData.R --mzr=X --dzr=Y --N=Z --age=W --minage=V --maxage=U`
 
-where X, Y and Z are numerical values. If non numerical values are entered, the program will throw and error
+where X, Y, Z, W, V and U are numerical values. If non numerical values are entered, the program will throw and error
 and exit.
 
 The flags can be entered in any order.
@@ -82,7 +83,11 @@ The flags can be entered in any order.
 
 `N` *must* be a positive integer >= 2, otherwise the program will throw and error and exit.
 
-If `mzr` is less than `dzr` the program will run, but will warn you that in real world datasets this can happen, but it is uncommon.
+`age`, `minage` and `maxage` must all be positive integers >= zero and <= 120, otherwise the program will throw an error and exit.
+
+If `mzr` is less than `dzr` the program will warn you that in real world datasets this is unusual (but not impossible).
+
+If N >= 1M the program will let you know that this is a large number of simualtions, and may take some time to complete.
 
 Future planned functionality:
 

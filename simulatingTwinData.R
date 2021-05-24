@@ -19,6 +19,7 @@ oldw <- getOption("warn")
 
 # Suppress warnings: will throw a warning if a non-numeric is entered - but I have my own warnings below, which are clearer which are more user friendly
 options(warn = -1)
+
 if (is.null(args[["mzr"]]) == T) {
   cat("No MZ correlation detected. Default (0.8) will be used.\n\n")
   mzr <<- 0.8
@@ -46,6 +47,7 @@ if (is.null(args[["age"]]) == T) {
 } else {
   age <<- round(as.numeric(args$age), 0)
 }
+
 if (is.null(args[["minage"]]) == T) {
   cat("No minimum age detected. Default (0) will be used.\n\n")
   minage <<- -Inf
@@ -103,7 +105,7 @@ if (mzr < (-1) | mzr > 1) {
        Please enter a number between -1 and 1 for both
        and/or please ensure you used the correct values for each flag: --mzr, --dzr, --N, --age, --minage, --maxage.\n\n", call. = FALSE
  )
-} else if (N <= 1) {
+} else if (N <= 1 | is.integer(N) == F) {
   stop(
        "Bad input. Your sample size is less than two, or is not a whole number.
        Please ensure N is a whole number >= 2
