@@ -5,14 +5,16 @@ A portfolio project.
 
 A very simple R script which randomly generates correlated data and has very basic error checking functionality.
 
-This script accepts three named arguments:
+This script accepts four named arguments:
 
 - `--mzr` (the monozygotic twin correlation; default = 0.8)
 - `--dzr` (the dizygotic twin correlation; default = 0.4)
 - `--n`   (the sample size; default = 1000)
-- `--age` (the mean age of the whole sample; default = 25, sd is fixed at 5)
+- `--age` (the mean age of the whole sample (poisson distribution); default = 25, sd is fixed at 5)
+- `--minage` (the minimum age of the whole sample; default = 0)
+- `--maxage` (the mean age of the whole sample; default = 25, sd is fixed at 5)
 
-All three arguments are optional. The program will use default values for any/all missing inputs.
+All four arguments are optional. The program will use default values for any/all missing inputs.
 
 To execute the script you must have R installed, and the packages `Rutils` and `MASS`.
 
@@ -27,6 +29,18 @@ Necessarily, monozygotic twins will always be the same gender. Dizygotic twins c
 female/female or male/female twin pairs.
 
 Necessarily, twin pairs will always be the same age.
+
+Phenotypes are normally distributed.
+
+Age is a truncated poisson distribution (max 120). A minimum age can be set (optional). If no
+minimum age is set, the defaul minimum is zero , however:
+
+*technically there in **no** minimum. By default the min age is
+set to `-Inf`, however a poisson distribution is probability distribution of positive discrete values by
+definition, so the minimum will always be zero - **however however**:*
+
+*If you set the minimum value of a simulated truncated poisson to
+`zero`, the simulated distribution will **not** be the same as a standard poisson - in R at least.*
 
 Each dataframe will contain 5 columns:
 

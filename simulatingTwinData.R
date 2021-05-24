@@ -1,11 +1,12 @@
 #!/usr/bin/env Rscript
 
 suppressMessages(suppressWarnings(library(R.utils, quietly = T)))
+suppressMessages(suppressWarnings(library(extraDistr, quietly = T)))
 # Accept command line arguments
-args <- commandArgs(trailingOnly = TRUE, asValues = T, args = c("mzr", "dzr", "N", "age"))
+args <- commandArgs(trailingOnly = TRUE, asValues = T, args = c("mzr", "dzr", "N", "age", "minage", "maxage"))
 
 # Documentation
-cat("\nCorrelated twin data simulator.\nAccepts three inputs, --mzr (MZ correlation), --dzr (DZ correlation), --N (number of twin pairs).\n\n")
+cat("\nCorrelated twin data simulator.\nAccepts three inputs:\n  --mzr (MZ correlation)\n  --dzr (DZ correlation)\n  --N (number of twin pairs)\n  --age (mean age of whole sample)\n  --minage (minimum age)\n  --maxage (maximum age)\n\n")
 cat("Twins are randomly assigned a gender and zygosity status, \"1\" for males and \"0\" for females.\n\n")
 cat("'mzm' = monozygotic males\n")
 cat("'mzf' = monozygotic females\n")
@@ -20,30 +21,43 @@ oldw <- getOption("warn")
 options(warn = -1)
 if (is.null(args[["mzr"]]) == T) {
   cat("No MZ correlation detected. Default (0.8) will be used.\n\n")
-  mzr <<- 0.8 #Number of twin pairs
+  mzr <<- 0.8
 } else {
   mzr <<- as.numeric(args$mzr)
 }
 
 if (is.null(args[["dzr"]]) == T) {
   cat("No DZ correlation detected. Default (0.4) will be used.\n\n")
-  dzr <<- 0.4 #Number of twin pairs
+  dzr <<- 0.4
 } else {
   dzr <<- as.numeric(args$dzr)
 }
 
 if (is.null(args[["N"]]) == T) {
   cat("No sample size detected. Default (1000) will be used.\n\n")
-  N <<- 1000 #Number of twin pairs
+  N <<- 1000
 } else {
-  N <<- as.numeric(args$N)
+  N <<- round(as.numeric(args$N), 0)
 }
 
 if (is.null(args[["age"]]) == T) {
   cat("No mean age detected. Default (25) will be used.\n\n")
-  age <<- 25 #Number of twin pairs
+  age <<- 25
 } else {
-  age <<- as.numeric(args$age)
+  age <<- round(as.numeric(args$age), 0)
+}
+if (is.null(args[["minage"]]) == T) {
+  cat("No minimum age detected. Default (0) will be used.\n\n")
+  minage <<- -Inf
+} else {
+  minage <<- round(as.numeric(args$minage), 0)
+}
+
+if (is.null(args[["maxage"]]) == T) {
+  cat("No maximum age detected. Default (120) will be used.\n\n")
+  maxage <<- 120
+} else {
+  maxage <<- round(as.numeric(args$maxage), 0)
 }
 
 # reactivate warnings
@@ -62,28 +76,58 @@ if (is.na(mzr) == T) {
   stop(
        "Bad input. Your sample size is not a numeric value\n\n", call. = FALSE
  )
-} 
+} else if (is.na(age) == T) {
+  stop(
+       "Bad input. Your age is not a numeric value\n\n", call. = FALSE
+ )
+} else if (is.na(minage) == T) {
+  stop(
+       "Bad input. Your minage is not a numeric value\n\n", call. = FALSE
+ )
+} else if (is.na(maxage) == T) {
+  stop(
+       "Bad input. Your maxage is not a numeric value\n\n", call. = FALSE
+ )
+}   
 
 # sanity test for input
 if (mzr < (-1) | mzr > 1) {
   stop(
        "Bad input. Your MZ correlation is out of bounds.
        Please enter a number between -1 and 1
-       and/or please ensure you used the correct values for each flag: --mzr, --dzr, --N.\n\n", call. = FALSE
+       and/or please ensure you used the correct values for each flag: --mzr, --dzr, --N, --age, --minage, --maxage.\n\n", call. = FALSE
  )
 } else if (dzr < (-1) | dzr > 1) {
   stop(
        "Bad input. Your DZ correlation is out of bounds.
        Please enter a number between -1 and 1 for both
-       and/or please ensure you used the correct values for each flag: --mzr, --dzr, --N.\n\n", call. = FALSE
+       and/or please ensure you used the correct values for each flag: --mzr, --dzr, --N, --age, --minage, --maxage.\n\n", call. = FALSE
  )
 } else if (N <= 1) {
   stop(
-       "Bad input. Your sample size is only one or less, or is not a whole number.
+       "Bad input. Your sample size is less than two, or is not a whole number.
        Please ensure N is a whole number >= 2
-       and/or please ensure you used the correct values for each flag: --mzr, --dzr, --N.\n\n", call. = FALSE
+       and/or please ensure you used the correct values for each flag: --mzr, --dzr, --N, --age, --minage, --maxage.\n\n", call. = FALSE
  )
-} 
+} else if (age < 0 | age > 120) {
+  stop(
+       "Bad input. Your mean age is out of bounds.
+       Please ensure mean age is a whole number between zero and 120.
+       and/or please ensure you used the correct values for each flag: --mzr, --dzr, --N, --age, --minage, --maxage.\n\n", call. = FALSE
+ )
+} else if (minage > 120) {
+  stop(
+       "Bad input. Your minimum age is out of bounds
+       Please ensure mean age is a whole number between zero and 120.
+       and/or please ensure you used the correct values for each flag: --mzr, --dzr, --N, --age, --minage, --maxage.\n\n", call. = FALSE
+ )
+} else if (maxage < 0 | maxage > 120) {
+  stop(
+       "Bad input. Your maximum age is out of bounds
+       Please ensure mean age is a whole number between zero and 120.
+       and/or please ensure you used the correct values for each flag: --mzr, --dzr, --N, --age, --minage, --maxage.\n\n", call. = FALSE
+ )
+}  
 
 if (mzr < dzr) {
 # Warnings regarding unlikely or unlikely twin pair correlations
@@ -96,6 +140,10 @@ if (mzr < 0) {
 
 if (dzr < 0) {
   cat("WARNING: supplied DZ correlation is less than zero, in real world data this is unlikely (but not impossible). Was this intentional?\n\n")
+}
+
+if (N >= 1000000) {
+  cat("You've specified a sample size of 1 million or more. This may take a while.\n\n")
 }
 
 library(MASS, quietly = T)
@@ -115,7 +163,16 @@ cat(paste(dzr), "\n\n")
 cat("Sample size:\n")
 cat(paste(N), "\n\n")
 
-set.seed(5)
+cat("mean age:\n")
+cat(paste(age), "\n\n")
+
+cat("lbound age:\n")
+cat(paste(minage), "\n\n")
+
+cat("ubound age:\n")
+cat(paste(maxage), "\n\n")
+
+# set.seed(5)
 
 # create a variance covariance matrix for MZs and DZs
 mzCov <- rbind(c(1, mzr), c(mzr, 1))
@@ -144,8 +201,32 @@ mz$sex2 <- mz$sex1 # You could use 'sexmz' here too, but this way you are explic
 dz$sex1 <- rbinom(n = N, 1, 0.5)
 dz$sex2 <- rbinom(n = N, 1, 0.5)
 
-mzage <- round(rnorm(n = N, mean = age, sd = 5), 0)
-dzage <- round(rnorm(n = N, mean = age, sd = 5), 0)
+# OK, I think I've got it. I think a poisson distribution is what I'm looking for - trucated is preferred - can specify a max age and/or a minimum age for study recruitment
+  # I could do a multivariate normal, which would probably by fine, but unless I'm specifying the exact time of birth, then I just want discrete, non-negative, values with a mean
+  # I could potentially do a binomial also, but unless I'm going for a mean age, that is around the middle of human life (what like 35-40?), then an approximately normal distribution seems a little unrealistic
+  # I could also just randomly generate values within a range with a uniform distribution (runif), but that seems unrealistic too
+  # When working with human twin data, I'm going to have a mean, and the ditribution will be non-uniform
+  # If I assume the sample is mostly children (because I work mostly with child/adolescent data so I'm clearly biased), then a poisson will probably be the best approximation?
+
+# OK, weird. poisson is limited at zero by definition, but if I use a truncated poisson, the distribution changes, compared to one with no lower bound
+# The distribution with min = 0 produces *more* values that = zero (as if the sampling distribution overlaps zero, and is then truncated, rather than a sampling distributions which by definition is always zero or positive...
+# Yep, just make the min -Inf - min will still be zero, but distribution will be a standard poisson
+
+mzage <- rtpois(n = N, lambda = age, a = minage, b = maxage)
+dzage <- rtpois(n = N, lambda = age, a = minage, b = maxage)
+
+# OK so... I Want
+  # optional min and max age - default min (0), default max (120)
+
+# Need to:
+  # Error when minage is > mean
+  # Error when mean is > maxage
+  # Error any age input is not a positive integer
+  # Need to fix - currently no minimum age Error - because if I set it to < 0, it flags the default value (-Inf)
+  # Need to specify if < 0, except when '-Inf'
+
+# Hang on... I don't really want a different mean age for mz and dz. If I want to introduce age effects, then I want a correlation between a phenotype, and the age
+# Let's figure that out later... maybe
 
 mz$age1 <- mzage
 mz$age2 <- mz$age1 # again makes it explicit - the twins are the same age
