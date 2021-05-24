@@ -14,6 +14,8 @@ This script accepts six named arguments:
 - `--minage` (the minimum age of the whole sample; default = 0)
 - `--maxage` (the mean age of the whole sample; default = 25, sd is fixed at 5)
 
+NOTE: The sample size represents the number of twin 'families' per zygosity, so N = 1000 will generate 1000 mz and 1000 dz twin pairs, which becomes 4000 individuals in total.
+
 All six arguments are optional. The program will use default values for any/all missing inputs.
 
 To execute the script you must have R installed, and the packages `Rutils` and `MASS`.
