@@ -105,7 +105,7 @@ if (mzr < (-1) | mzr > 1) {
        Please enter a number between -1 and 1 for both
        and/or please ensure you used the correct values for each flag: --mzr, --dzr, --N, --age, --minage, --maxage.\n\n", call. = FALSE
  )
-} else if (N <= 1 | is.integer(N) == F) {
+} else if (N <= 1) {
   stop(
        "Bad input. Your sample size is less than two, or is not a whole number.
        Please ensure N is a whole number >= 2
@@ -148,6 +148,10 @@ if (N >= 1000000) {
   cat("You've specified a sample size of 1 million or more. This may take a while.\n\n")
 }
 
+if (minage == maxage) {
+  cat("Your min and max age are the same. Your sample will all be the same age. Was this intentional?\n\n")
+}
+
 library(MASS, quietly = T)
 # library(tidyverse, quietly = T)
 # library(dplyr, quietly = T)
@@ -175,6 +179,13 @@ cat("ubound age:\n")
 cat(paste(maxage), "\n\n")
 
 # set.seed(5)
+
+mzr <- 0.8
+dzr <- 0.4
+N <- 1000
+age <- 25
+minage <- -Inf
+maxage <- 120
 
 # create a variance covariance matrix for MZs and DZs
 mzCov <- rbind(c(1, mzr), c(mzr, 1))
@@ -259,19 +270,31 @@ dz$zyg[
        dz$sex2 == 1
        ]  <- "dzF"
 
-head(mz)
-head(dz)
+twindat <- rbind(mz, dz)
+
+twindat$FID <- sample(c(100000:999999), length(twindat[,1]), replace = F)
+
+# names(twindat)[twindat == "V2"] <- "twin2"
+
+twindat <- twindat[, c(8,7,1,3,5,2,4,6)]
+
+head(twindat)
+tail(twindat)
+
+write.table(
+            twindat,
+            "data/twindat.txt",
+            col.names = T,
+            row.names = F,
+            sep = "\t",
+            append = F,
+            quote = F
+            )
 
 # tidy up the above
 # *Check* (17-05-2021) - # give your columns names
 # *Check* (17-05-2021) - # add in some conditions - default values, checks for bad input, etc.
 # *Check* (19-05-2021) - # find a way to uniquely specify arguments, so you can leave MZ blank, but still input dzr and/or N, so MZ uses default
-# find a way to optionally specify arguments without a flag - iff they are in the correct order?
-  # Maybe I don't need to do this?
-  # Maybe it would be even better if it was an interactive program that could be executed, and accept input
-  # This way I could start with instructions, and have the user input the information they're interested in?
-
-# *Check* (21-05-2021) - # add in sex variables
 
 # Hang on. Sex is not quite so simple. I need to assign a sex value to each individual - and then need a way to determine zygosity
 # Ah, no, only for dz. For MZ the sex will be the same in every case
@@ -281,8 +304,7 @@ head(dz)
 # for mzs, I need the same value in each column
 # for dzs, I can randomly assign the values. So... if I just randomly assign 0's and 1's to each twin... it will be 50% dzo. Yep. Which is probably biologically realistic... is it?
 # So, the simplest thing would be to just duplicate the mz sex column, and run two separte dz columns
-
-# add in age variables
+# *Check* (21-05-2021) - # add in sex variables
 
 # What do I want to do?
 # Create an age variable for my twin pairs
@@ -294,16 +316,40 @@ head(dz)
 # When you run a twin study - what kinds of things are common?
   # You're looking for a miminum age?
   # You're looking for an age range?
+# *Check* (25-05-2021) - # add in age variables
 
 # *Check* (21-05-2021) - # add in zyg ID
 
 # add in FID and IID
+  # So, do I want randomly generated values
+  # Or do I just want to start at 1,000,000,000 and add values?
+# OK, so ID's would be more useful if they could
+  # Be expanded to include batches (multiple rounds of recruitment)
+    # So, you would like a way to identify the data wave
+    # You would like to ensure ongoing batches do not create duplicate IDs with previous ones
+  # Structured - to help indicate multiple rounds of data collection
+    # Participant location (if multiple data collection locations)
+    # Data collection at multiple time points
+  # Layered IDs - multiple ID streams to help anonymize sensitive data and maintain multiple identifiers for personal and/or study (phenotype) data
+# So for my dataset - I might want to include an 'append/overwrite' option
+  # I can make provisions for my simulator to indicate a study wave component in the ID generation
+  # So you can call the program on multiple occasions and either append/overwrite data, but ensure unique IDs will be created, and will not lead to duplicates in a previous round of data generation
+  # Maybe, I can make it so you can create multiple datasets, all with their own unique IDs
+  # ***would it be possible to create multiple datasets, which include *overlapping* data!? So I can get the 'same' IDs back to collect more/new/different data?!
+    # That woudl be CoOl!
 
-# rbind into 1 fam per line
+# OK... can I just create some unique UUIDs for each sample?
+  # Start simple - just create unique IDs for each family using sample.
 
-# save output as a *.txt file - use 'args' as filename - Twimsim_mzr[mzr]_dzr[dzr]_N[N].txt
+# *Check* (25-05-2021) - # rbind into 1 fam per line
 
-# when printing, suppress the '[1]' at the beginning of the line - i.e just print the output, as output
+# *Check* (25-05-2021) - # save output as a *.txt file - use 'args' as filename - Twimsim_mzr[mzr]_dzr[dzr]_N[N].txt
+
+# *Check* (25-05-2021) - # when printing, suppress the '[1]' at the beginning of the line - i.e just print the output, as output
+
+# Randomly generate NAs in the data
+
+# What else? I could produce data summaires? Or I could do that in another script
 
 # Don't take forever - get something that works, and shows off a few things
 # What next?
@@ -312,4 +358,6 @@ head(dz)
 # Do the same thing in python
 # Do the same thing in bash
 # Do the same thing in C++
+
+# Start creating training datasets for Machine learning projects!
 
