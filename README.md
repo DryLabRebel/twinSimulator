@@ -3,26 +3,26 @@ Twin Simulator
 
 A portfolio project.
 
-A very simple R script which randomly generates correlated twin data for identical (monozygotic) and
+A simple R script which randomly generates correlated twin data for identical (monozygotic) and
 non-identical (dizygotic) twins with basic error checking functionality.
 
 This script accepts six named arguments:
 
 - `--mzr` (the monozygotic twin correlation; default = 0.8)
 - `--dzr` (the dizygotic twin correlation; default = 0.4)
-- `--n`   (the number of mz *and* dz twins; default = 1000)
+- `--n`   (the number of monozygotic *and* dizygotic twins; default = 1000)
 - `--age` (the mean age of the whole sample (poisson distribution); default = 25)
 - `--minage` (the minimum age of the whole sample; default = 0)
 - `--maxage` (the mean age of the whole sample; default = 25, sd is fixed at 5)
 
-NOTE: The sample size represents the number of twin 'families' per zygosity, so N = 1000 will generate 1000 mz and 1000 dz twin pairs, which becomes 4000 individuals in total.
+NOTE: The sample size represents the number of twin 'families' per zygosity, so N = 1000 will generate 1000 monozygotic and 1000 dizygotic twin pairs, which becomes 4000 individuals in total.
 
 All six arguments are optional. The program will use default values for any/all missing inputs.
 
 To execute the script you must have R installed, and the R packages `Rutils`, `extraDistr` and `MASS` installed.
 
 By executing the script with one or more flags, the script will randomly generate pairs of correlated values
-for both mz's and dz's according to the specified values, equal to the number of samples specified
+for both monozygotic and dizygotic twins according to the specified values, equal to the number of samples specified
 (designated either by the input provided, or by the assigned defaults).
 
 The script will generate a dataframe containing monozygotic and dizygotic twins with the number of twin pairs
