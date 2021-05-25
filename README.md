@@ -25,8 +25,10 @@ By executing the script with one or more flags, the script will randomly generat
 for both monozygotic and dizygotic twins according to the specified values, equal to the number of samples specified
 (designated either by the input provided, or by the assigned defaults).
 
-The script will generate a dataframe containing monozygotic and dizygotic twins with the number of twin pairs
-equal to
+The script will generate a dataframe containing monozygotic and dizygotic twins each with the number of twin pairs
+equal to N
+
+It will randomly assign a six digit unique ID to each pair of twins (each family).
 
 The script will also randomly assign a gender to each twin, or twin pair.
 
@@ -47,7 +49,7 @@ definition, so the minimum will always be zero*
 *ALSO NOTE: If you manually set the minimum value of a simulated truncated poisson to
 `zero`, the resulting distribution will **not** be the same as a standard poisson*
 
-Each dataframe will contain 7 columns:
+Each dataframe will contain 8 columns:
 
 - `twin1` - the phenotype for twin one (which can be thought of as the 'first born' twin)
 - `twin2` - the phenotype for twin two (which can be thought of as the 'second born' twin)
@@ -56,6 +58,7 @@ Each dataframe will contain 7 columns:
 - `age1` - the age of twin 1
 - `age2` - the age of twin 2 (which is necessarily the same as twin1)
 - `zyg` - the zygosity of each twin pair
+- `FID` - a randomly generated, unique six digit ID for each row (family)
 
 Zygosity:
 
