@@ -117,7 +117,7 @@ if (mzr < (-1) | mzr > 1) {
        Please ensure mean age is a whole number between zero and 120.
        and/or please ensure you used the correct values for each flag: --mzr, --dzr, --N, --age, --minage, --maxage.\n\n", call. = FALSE
  )
-} else if (minage > 120) {
+} else if ((minage != -Inf & minage < 0) | minage > 120) {
   stop(
        "Bad input. Your minimum age is out of bounds
        Please ensure mean age is a whole number between zero and 120.
@@ -127,6 +127,18 @@ if (mzr < (-1) | mzr > 1) {
   stop(
        "Bad input. Your maximum age is out of bounds
        Please ensure mean age is a whole number between zero and 120.
+       and/or please ensure you used the correct values for each flag: --mzr, --dzr, --N, --age, --minage, --maxage.\n\n", call. = FALSE
+ )
+} else if (minage > age) {
+  stop(
+       "Bad input. You can't have a mean age less than your minimum age group dummy.
+       Please ensure mean age is larger than or equal to your minimum age
+       and/or please ensure you used the correct values for each flag: --mzr, --dzr, --N, --age, --minage, --maxage.\n\n", call. = FALSE
+ )
+} else if (age > maxage) {
+  stop(
+       "Bad input. You can't have a mean age that exceeds your maximum age group dummy.
+       Please ensure mean age is less than or equal to your maximum age
        and/or please ensure you used the correct values for each flag: --mzr, --dzr, --N, --age, --minage, --maxage.\n\n", call. = FALSE
  )
 }  
@@ -338,6 +350,14 @@ write.table(
   # ***would it be possible to create multiple datasets, which include *overlapping* data!? So I can get the 'same' IDs back to collect more/new/different data?!
     # That woudl be CoOl!
 
+# How do I make this whole thing better?
+  # More maintainable
+  # More scalable
+  # More professional/legitimate?
+  # Create functions - in separate files
+  # Improve the documentation
+    # Create an official documentation!
+
 # OK... can I just create some unique UUIDs for each sample?
   # Start simple - just create unique IDs for each family using sample.
 
@@ -350,10 +370,6 @@ write.table(
 # Randomly generate NAs in the data
 
 # What else? I could produce data summaires? Or I could do that in another script
-
-# Don't take forever - get something that works, and shows off a few things
-# What next?
-# Web development?
 
 # Do the same thing in python
 # Do the same thing in bash

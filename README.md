@@ -96,6 +96,8 @@ The flags can be entered in any order.
 
 `age`, `minage` and `maxage` must all be positive integers >= zero and <= 120, otherwise the program will throw an error and exit.
 
+`age` must be greater than or equal to `minage`, and less than or equal to `maxage`, otherwise the program will throw an error and exit.
+
 If `mzr` is less than `dzr` the program will warn you that in real world datasets this is unusual (but not impossible).
 
 If N >= 1M the program will let you know that this is a large number of simualtions, and may take some time to complete.
