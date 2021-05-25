@@ -72,7 +72,10 @@ Zygosity:
 Usage:
 ------
 
-Download the script `simulatingTwinData.R` into some directory. From that directory on the command line enter:
+Download the script `simulatingTwinData.R` into some directory. Inside the same directory, create a new
+folder/directory named `data` - R will save the simulated dataset into this directory.
+
+From inside the same directory as the script, on the command line enter:
 
 `$./simulatingTwinData.R`
 
