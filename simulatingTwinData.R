@@ -3,7 +3,12 @@
 suppressMessages(suppressWarnings(library(R.utils, quietly = T)))
 suppressMessages(suppressWarnings(library(extraDistr, quietly = T)))
 # Accept command line arguments
-args <- commandArgs(trailingOnly = TRUE, asValues = T, args = c("mzr", "dzr", "N", "age", "minage", "maxage"))
+
+# argin
+labs <- c("mzr", "dzr", "N", "age", "minage", "maxage")
+defaults <- c(0.8, 0.4, 1000, 25, -Inf, 120)
+
+args <- commandArgs(trailingOnly = TRUE, asValues = T, args = labs)
 
 # Documentation
 cat("\nCorrelated twin data simulator.\nAccepts three inputs:\n  --mzr (MZ correlation)\n  --dzr (DZ correlation)\n  --N (number of twin pairs)\n  --age (mean age of whole sample)\n  --minage (minimum age)\n  --maxage (maximum age)\n\n")
@@ -20,47 +25,53 @@ oldw <- getOption("warn")
 # Suppress warnings: will throw a warning if a non-numeric is entered - but I have my own warnings below, which are clearer which are more user friendly
 options(warn = -1)
 
-if (is.null(args[["mzr"]]) == T) {
-  cat("No MZ correlation detected. Default (0.8) will be used.\n\n")
-  mzr <<- 0.8
+for (i in length(labs)) do {
+
+if (is.null(args[[paste(labs[i], sep="")]]) == T) {
+  cat("No ", paste(labs[i], sep=""), " detected. Default (", paste(as.character(defaults[i]), sep=""),") will be used.\n\n")
+   <<- defaults[i]
 } else {
   mzr <<- as.numeric(args$mzr)
 }
 
-if (is.null(args[["dzr"]]) == T) {
-  cat("No DZ correlation detected. Default (0.4) will be used.\n\n")
-  dzr <<- 0.4
-} else {
-  dzr <<- as.numeric(args$dzr)
-}
+# Ah, this probs won't work - I'll need a list I think
+# What do I want to do? I want to assign the value of default, to the variable name, from the 'list' labs
+# Maybe a bit over the top though? I don't have/want a data frame. I just want to assign a value, to a variable, and I want multiple variables?
 
-if (is.null(args[["N"]]) == T) {
-  cat("No sample size detected. Default (1000) will be used.\n\n")
-  N <<- 1000
-} else {
-  N <<- round(as.numeric(args$N), 0)
-}
-
-if (is.null(args[["age"]]) == T) {
-  cat("No mean age detected. Default (25) will be used.\n\n")
-  age <<- 25
-} else {
-  age <<- round(as.numeric(args$age), 0)
-}
-
-if (is.null(args[["minage"]]) == T) {
-  cat("No minimum age detected. Default (0) will be used.\n\n")
-  minage <<- -Inf
-} else {
-  minage <<- round(as.numeric(args$minage), 0)
-}
-
-if (is.null(args[["maxage"]]) == T) {
-  cat("No maximum age detected. Default (120) will be used.\n\n")
-  maxage <<- 120
-} else {
-  maxage <<- round(as.numeric(args$maxage), 0)
-}
+# if (is.null(args[["dzr"]]) == T) {
+#   cat("No DZ correlation detected. Default (0.4) will be used.\n\n")
+#   dzr <<- 0.4
+# } else {
+#   dzr <<- as.numeric(args$dzr)
+# }
+# 
+# if (is.null(args[["N"]]) == T) {
+#   cat("No sample size detected. Default (1000) will be used.\n\n")
+#   N <<- 1000
+# } else {
+#   N <<- round(as.numeric(args$N), 0)
+# }
+# 
+# if (is.null(args[["age"]]) == T) {
+#   cat("No mean age detected. Default (25) will be used.\n\n")
+#   age <<- 25
+# } else {
+#   age <<- round(as.numeric(args$age), 0)
+# }
+# 
+# if (is.null(args[["minage"]]) == T) {
+#   cat("No minimum age detected. Default (0) will be used.\n\n")
+#   minage <<- -Inf
+# } else {
+#   minage <<- round(as.numeric(args$minage), 0)
+# }
+# 
+# if (is.null(args[["maxage"]]) == T) {
+#   cat("No maximum age detected. Default (120) will be used.\n\n")
+#   maxage <<- 120
+# } else {
+#   maxage <<- round(as.numeric(args$maxage), 0)
+# }
 
 # reactivate warnings
 options(warn = oldw)
@@ -170,25 +181,25 @@ library(MASS, quietly = T)
 # library(GGally, quietly = T)
 
 cat("No of arguments supplied:\n")
-cat(paste(length(args)), "\n\n")
+cat(paste(length(args), sep=""), "\n\n")
 
 cat("mzr:\n")
-cat(paste(mzr), "\n\n")
+cat(paste(mzr, sep=""), "\n\n")
 
 cat("dzr:\n")
-cat(paste(dzr), "\n\n")
+cat(paste(dzr, sep=""), "\n\n")
 
 cat("Sample size:\n")
-cat(paste(N), "\n\n")
+cat(paste(N, sep=""), "\n\n")
 
 cat("mean age:\n")
-cat(paste(age), "\n\n")
+cat(paste(age, sep=""), "\n\n")
 
 cat("lbound age:\n")
-cat(paste(minage), "\n\n")
+cat(paste(minage, sep=""), "\n\n")
 
 cat("ubound age:\n")
-cat(paste(maxage), "\n\n")
+cat(paste(maxage, sep=""), "\n\n")
 
 # set.seed(5)
 
@@ -370,6 +381,8 @@ write.table(
 # Randomly generate NAs in the data
 
 # What else? I could produce data summaires? Or I could do that in another script
+
+# I could introduce some loops to simplify and improve the code
 
 # Do the same thing in python
 # Do the same thing in bash
