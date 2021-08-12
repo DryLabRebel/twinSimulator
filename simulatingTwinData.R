@@ -29,12 +29,12 @@ for (i in length(labs)) do {
 
 if (is.null(args[[paste(labs[i], sep="")]]) == T) {
   cat("No ", paste(labs[i], sep=""), " detected. Default (", paste(as.character(defaults[i]), sep=""),") will be used.\n\n")
-   <<- defaults[i]
+  labs[i] <<- defaults[i]
 } else {
-  mzr <<- as.numeric(args$mzr)
+  labs[i] <<- as.numeric(args$labs[i])
 }
 
-# Ah, this probs won't work - I'll need a list I think
+# Ah, this probs won't work - I'll need a list I think - surprise, surprise
 # What do I want to do? I want to assign the value of default, to the variable name, from the 'list' labs
 # Maybe a bit over the top though? I don't have/want a data frame. I just want to assign a value, to a variable, and I want multiple variables?
 
